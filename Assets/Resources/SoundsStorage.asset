@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64f70e6355427d544a394a3606b34c64, type: 3}
+  m_Name: SoundsStorage
+  m_EditorClassIdentifier: 
+  soundData:
+  - id: LevelUp
+    sound: {fileID: 8300000, guid: 7478151cf36724a7dada558f746c3633, type: 3}
+  - id: Merge
+    sound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
+  - id: StartShoot
+    sound: {fileID: 8300000, guid: d46323e22e74e46baa241cbf48c85671, type: 3}
+  - id: EndShoot
+    sound: {fileID: 8300000, guid: 19f89c6e740e7447f9e12a8310d3e973, type: 3}

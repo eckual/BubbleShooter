@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 083d10177896b4949830ec92f0c985dd, type: 3}
+  m_Name: BubbleSettings
+  m_EditorClassIdentifier: 
+  width: 6
+  height: 10
+  fallingSpeed: 15
+  moveSpeed: 5
+  initialRowsCount: 4
+  initialColumnsCount: 6
+  bubblesVisibleCount: 24
+  generationMinPower: 1
+  generationMaxPower: 7
+  bubbles:
+  - number: 2
+    backColor:
+      serializedVersion: 2
+      rgba: 4287522791
+    borderColor:
+      serializedVersion: 2
+      rgba: 4287522791
+  - number: 4
+    backColor:
+      serializedVersion: 2
+      rgba: 4279250376
+    borderColor:
+      serializedVersion: 2
+      rgba: 4279250376
+  - number: 8
+    backColor:
+      serializedVersion: 2
+      rgba: 4280136952
+    borderColor:
+      serializedVersion: 2
+      rgba: 4280136952
+  - number: 16
+    backColor:
+      serializedVersion: 2
+      rgba: 4278215665
+    borderColor:
+      serializedVersion: 2
+      rgba: 25585
+  - number: 32
+    backColor:
+      serializedVersion: 2
+      rgba: 4281649248
+    borderColor:
+      serializedVersion: 2
+      rgba: 4281649248
+  - number: 64
+    backColor:
+      serializedVersion: 2
+      rgba: 4286689316
+    borderColor:
+      serializedVersion: 2
+      rgba: 4286689316
+  - number: 128
+    backColor:
+      serializedVersion: 2
+      rgba: 4293702210
+    borderColor:
+      serializedVersion: 2
+      rgba: 4293702210
+  - number: 256
+    backColor:
+      serializedVersion: 2
+      rgba: 4293688644
+    borderColor:
+      serializedVersion: 2
+      rgba: 4294967295
+  - number: 512
+    backColor:
+      serializedVersion: 2
+      rgba: 4290248896
+    borderColor:
+      serializedVersion: 2
+      rgba: 4294967295
+  - number: 1024
+    backColor:
+      serializedVersion: 2
+      rgba: 4294455428
+    borderColor:
+      serializedVersion: 2
+      rgba: 4294967295
+  - number: 2048
+    backColor:
+      serializedVersion: 2
+      rgba: 4287384802
+    borderColor:
+      serializedVersion: 2
+      rgba: 4294967295
