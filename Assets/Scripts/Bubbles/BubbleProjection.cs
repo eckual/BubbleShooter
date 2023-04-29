@@ -42,7 +42,7 @@ namespace Bubbles
 
         private void OnCurrentPowerChanged(int currentPower)
         {
-            var bubbleDataIndex = _settings.Bubbles.FindIndex(x => x.number == Bubble.GetNumber(_sessionController.BubblesController.CurrentPower));
+            var bubbleDataIndex = _settings.Bubbles.FindIndex(b => b.number == Bubble.GetNumber(_sessionController.BubblesController.CurrentPower));
             if (bubbleDataIndex == -1)
                 return;
 
@@ -73,6 +73,7 @@ namespace Bubbles
             }
             transform.position = position;
         }
+        
         private void OnPathChanged(List<Vector3> path)
         {
             if (path.IsEmpty()) transform.position = _initialPosition;

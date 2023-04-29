@@ -23,11 +23,15 @@ namespace Controllers
             _sessionController.BubblesController.OnMerge += OnMerge;
             _sessionController.PlayerController.BubbleShootController.OnShootStarted += OnStartShoot;
             _sessionController.PlayerController.BubbleShootController.OnShootEnded += OnEndShoot;
+            PlaySound("Background");
         }
+
+        public void StopSound(string id = null) => audioSource.Stop();
 
         public void PlaySound(string id)
         {
-            var soundIndex = _sounds.SoundData.FindIndex(x => x.id == id);
+            var soundIndex = _sounds.SoundData.FindIndex(sound => sound.id == id);
+            
             if (soundIndex == -1)
                 return;
 

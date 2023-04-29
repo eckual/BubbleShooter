@@ -43,6 +43,8 @@ namespace Utils
         {
             if (_freeObjects.Contains(busyObject)) return;
             
+            if(busyObject == null) return;
+            
             busyObject.Release();
             _busyObjects.Remove(busyObject);
             _freeObjects.Add(busyObject);

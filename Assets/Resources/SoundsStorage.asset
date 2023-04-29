@@ -23,3 +23,5 @@ MonoBehaviour:
     sound: {fileID: 8300000, guid: 19f89c6e740e7447f9e12a8310d3e973, type: 3}
   - id: EndShoot
     sound: {fileID: 8300000, guid: 19f89c6e740e7447f9e12a8310d3e973, type: 3}
+  - id: Background
+    sound: {fileID: 8300000, guid: a11aaf4efef28ce45b30c2da3116ac76, type: 3}

@@ -35,6 +35,10 @@ namespace Bubbles
 
     public class BubblesController : MonoBehaviour
     {
+        private const string BUBBLE_ID = "Bubble";
+        private const float INPUT_ANGLE_IN_RADIANS = Mathf.PI * 0.33f;
+        private const int SIDES_COUNT = 6;
+        
         public event Action<Bubble> OnBubbleAdded;
         public event Action<Bubble> OnBubbleReleased;
         public event Action<MergeInfo> OnMerge;
@@ -52,11 +56,8 @@ namespace Bubbles
         private BubblesCollection _askedAttached = new BubblesCollection();
         private BubblesCollection _falling = new BubblesCollection();
         private BubblesCollection _notFalling = new BubblesCollection();
+        public BubblesCollection Bubbles => _bubbles;
         
-        private const string BUBBLE_ID = "Bubble";
-        private const float INPUT_ANGLE_IN_RADIANS = Mathf.PI * 0.33f;
-        private const int SIDES_COUNT = 6;
-
         private int _maxPower;
         private int _minPower;
         private int _currentPower;
@@ -84,9 +85,6 @@ namespace Bubbles
 
         public int MaxX => _maxX;
 
-        public int MaxY => _maxY;
-
-        public BubblesCollection Bubbles => _bubbles;
 
         public int CurrentPower
         {
@@ -193,18 +191,18 @@ namespace Bubbles
         private void CheckAutomatic(int power, ref int x, ref int y)
         {
             _highest.Clear();
-            for (int i = 0; i < _merged.Count; i++)
+
+            for (var index = 0; index < _merged.Count; index++)
             {
-                var bubble = _merged[i];
-                for (int j = 0; j < SIDES_COUNT; j++)
+                var bubble = _merged[index];
+                for (var j = 0; j < SIDES_COUNT; j++)
                 {
-                    var link = bubble.GetLinked((BubbleSide)j);
-                    if (link && link.Power == power)
-                    {
-                        x = bubble.X;
-                        y = bubble.Y;
-                        return;
-                    }
+                    var link = bubble.GetLinked((BubbleSide) j);
+                    if (!link || link.Power != power) continue;
+
+                    x = bubble.X;
+                    y = bubble.Y;
+                    return;
                 }
             }
 
@@ -215,11 +213,10 @@ namespace Bubbles
             var minXToProjectile = _highest.Min(bubble => Mathf.Abs(bubble.X - projectileBubble.X));
 
             var closestToFirst = _highest.Find(bubble => Mathf.Abs(bubble.X - projectileBubble.X) == minXToProjectile);
-            if (closestToFirst)
-            {
-                x = closestToFirst.X;
-                y = closestToFirst.Y;
-            }
+            if (!closestToFirst) return;
+            
+            x = closestToFirst.X;
+            y = closestToFirst.Y;
         }
 
         private void CheckAttachedToTop(Bubble bubble, ref bool attached)
@@ -239,17 +236,17 @@ namespace Bubbles
                     attached = true;
                     break;
                 }
-                if (!_askedAttached.Contains(link))
-                {
-                    _askedAttached.Add(link);
-                    CheckAttachedToTop(link, ref attached);
-                }
+
+                if (_askedAttached.Contains(link)) continue;
+                
+                _askedAttached.Add(link);
+                CheckAttachedToTop(link, ref attached);
             }
         }
 
         private void GetAllLinks(Bubble bubble, List<Bubble> buffer)
         {
-            for(int i = 0; i < SIDES_COUNT; i++)
+            for(var i = 0; i < SIDES_COUNT; i++)
             {
                 var bubbleSide = i;
                 var link = bubble.GetLinked((BubbleSide)bubbleSide);
@@ -273,7 +270,7 @@ namespace Bubbles
                     _askedAttached.Clear();
 
                     var link = bubble.GetLinked((BubbleSide)j);
-                    if (link == null || _merged.Contains(link) || link.Y == MaxY-1)
+                    if (link == null || _merged.Contains(link) || link.Y == _maxY-1)
                         continue;
 
                     var attached = false;
@@ -329,12 +326,12 @@ namespace Bubbles
                 var newBubble = SpawnBubble(x, y, power);
                 if (newBubble.X != -1 && newBubble.Y != -1)
                 {
-                    CheckFall(newBubble, out bool attached);
+                    CheckFall(newBubble, out var attached);
                     if (attached)
                     {
                         GetAllLinks(newBubble, _notFalling);
 
-                        for (int i = 0; i < _notFalling.Count; i++)
+                        for (var i = 0; i < _notFalling.Count; i++)
                         {
                             var notFallingBubble = _notFalling[i];
                             if (_falling.Contains(notFallingBubble))
@@ -352,37 +349,36 @@ namespace Bubbles
         private void CheckToClear()
         {
             var intersected = _falling.Intersect(_bubbles).Count();
-            if (_bubbles.Count - intersected == 0)
+            if (_bubbles.Count - intersected != 0) return;
+            
+            OnBubblesCleared?.Invoke();
+
+            _minX = 0;
+            _maxX = _settings.Width;
+            _minY = 0;
+            _maxY = _settings.Height;
+            _deadlineY = _minY + 1;
+
+            for (var i = 0; i < _falling.Count; i++)
             {
-                OnBubblesCleared?.Invoke();
-
-                _minX = 0;
-                _maxX = _settings.Width;
-                _minY = 0;
-                _maxY = _settings.Height;
-                _deadlineY = _minY + 1;
-
-                for (int i = _falling.Count - 1; i >= 0; i--)
-                {
-                    var bubble = _falling[i];
-                    ReleaseBubble(bubble);
-                }
-
-                SpawnBubbles();
-                _rootNextPosition = _rootInitialPosition;
-                bubblesPool.Root.transform.localPosition = _rootInitialPosition + _initialRowsCount* Vector3.up * Mathf.Sin(INPUT_ANGLE_IN_RADIANS);
-                _isRootMoving = true;
+                var bubble = _falling[i];
+                ReleaseBubble(bubble);
             }
+
+            SpawnBubbles();
+            _rootNextPosition = _rootInitialPosition;
+            bubblesPool.Root.transform.localPosition = _rootInitialPosition + _initialRowsCount* Vector3.up * Mathf.Sin(INPUT_ANGLE_IN_RADIANS);
+            _isRootMoving = true;
         }
 
-        public void Explode(Bubble bubble)
+        private void Explode(Bubble bubble)
         {
             var x = bubble.X;
             var y = bubble.Y;
             var power = bubble.Power;
 
             _merged.Add(bubble);
-            for (int bubbleSide = 0; bubbleSide < SIDES_COUNT; bubbleSide++)
+            for (var bubbleSide = 0; bubbleSide < SIDES_COUNT; bubbleSide++)
             {
                 var link = bubble.GetLinked((BubbleSide)bubbleSide);
                 if (!link)
@@ -393,10 +389,8 @@ namespace Bubbles
 
             CheckMergedFall();
 
-            for (int i = _merged.Count - 1; i >= 0; i--)
-            {
+            for (var i = 0; i < _merged.Count; i++) 
                 ReleaseBubble(_merged[i]);
-            }
 
             OnExplosion?.Invoke(new ExplosionInfo()
             {
@@ -439,7 +433,7 @@ namespace Bubbles
             _minY++;
             _deadlineY++;
 
-            for (int x = 0; x < _maxX; x++)
+            for (var x = 0; x < _maxX; x++)
             {
                 var bubble = bubblesPool.GetOrInstantiate(BUBBLE_ID);
                 bubble.transform.localPosition = GetLocalSpawnPosition(x, _maxY-1);
@@ -470,7 +464,7 @@ namespace Bubbles
             LinkBubbles();
         }
 
-        public void ReleaseBubble(Bubble bubble)
+        private void ReleaseBubble(Bubble bubble)
         {
             _bubbles.Remove(bubble);
             _falling.Remove(bubble);
@@ -515,30 +509,28 @@ namespace Bubbles
         {
             Locked = _falling.Count > 0 || _isRootMoving;
 
-            if (Locked)
+            if (!Locked) return;
+            
+            for (int i = _falling.Count - 1; i >= 0; i--)
             {
-                for (int i = _falling.Count - 1; i >= 0; i--)
-                {
-                    var fallingBubble = _falling[i];
-                    fallingBubble.transform.position += Vector3.down * _fallingSpeed * Time.deltaTime;
-                    if (fallingBubble.transform.position.y < fallingReleasePosition.position.y)
-                    {
-                        ReleaseBubble(fallingBubble);
-                    }
-                }
-
-                if (_isRootMoving)
-                {
-                    bubblesPool.Root.position = Vector3.MoveTowards(bubblesPool.Root.position,
-                                                                    _rootNextPosition,
-                                                                    _moveSpeed * Time.deltaTime);
-                    if (bubblesPool.Root.position.ApproximatelyEqual(_rootNextPosition))
-                    {
-                        _isRootMoving = false;
-                        OnRootMovedFinished();
-                    }
-                }
+                var fallingBubble = _falling[i];
+                fallingBubble.transform.position += Vector3.down * _fallingSpeed * Time.deltaTime;
+                if (!(fallingBubble.transform.position.y < fallingReleasePosition.position.y)) continue;
+                
+                ReleaseBubble(fallingBubble);
             }
+
+            if (!_isRootMoving) return;
+            
+            bubblesPool.Root.position = Vector3.MoveTowards(bubblesPool.Root.position,
+                _rootNextPosition,
+                _moveSpeed * Time.deltaTime);
+            
+            if (!bubblesPool.Root.position.ApproximatelyEqual(_rootNextPosition)) return;
+            
+            _isRootMoving = false;
+            OnRootMovedFinished();
+            
         }
     }
 }

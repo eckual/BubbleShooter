@@ -70,8 +70,11 @@ namespace UI
         private void OnBubbleReleased(Bubble bubble)
         {
             var bubbleInfo = _bubbleInfos.FirstOrDefault(b => b.Source == bubble);
-            if (bubbleInfo == null) 
-                throw new NullReferenceException("released bubble should not be null");
+            if (bubbleInfo == null)
+            {
+                Debug.Log("Released bubble should not be null");
+                return;
+            }
             
             bubbleInfosPool.Release(bubbleInfo);
             bubbleInfo.gameObject.SetActive(false);

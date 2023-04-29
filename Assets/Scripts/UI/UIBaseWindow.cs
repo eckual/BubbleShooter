@@ -11,10 +11,12 @@ namespace UI
 
     public class UIBaseWindow : MonoBehaviour
     {
+        public event Action<WindowState> OnWindowStateChanged;
+        
         [SerializeField] protected string id;
         [SerializeField] protected WindowState windowState;
-        public event Action<WindowState> OnWindowStateChanged;
 
+        protected bool isInitialized;
         public virtual string Id => id;
 
         public WindowState WindowState
