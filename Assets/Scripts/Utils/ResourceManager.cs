@@ -1,21 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public static class ResourceManager
+namespace Utils
 {
-    private static Dictionary<string, Object> cache = new Dictionary<string, Object>();
-
-    public static T GetResource<T>(string path) where T: Object
+    public static class ResourceManager
     {
-        if (cache.ContainsKey(path))
+        private static Dictionary<string, Object> cache = new Dictionary<string, Object>();
+
+        public static T GetResource<T>(string path) where T: Object
         {
-            return cache[path] as T;
-        }
-        else
-        {
+            if (cache.ContainsKey(path))
+                return cache[path] as T;
+
             cache[path] = Resources.Load<T>(path);
-            return cache[path] as T;
+            return (T) cache[path];
         }
     }
 }

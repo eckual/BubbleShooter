@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Bubbles;
+using Utils;
 
 public class UISwapBubble : MonoBehaviour
 {
@@ -41,7 +42,7 @@ public class UISwapBubble : MonoBehaviour
     public void Init(int power)
     {
         Power = power;
-        var settings = ResourceManager.GetResource<BubblesSettings>(GameConstants.BUBBLE_SETTINGS);
+        var settings = ResourceManager.GetResource<BubblesSettings>(GameConstants.BubbleSettings);
         var number = Bubble.GetNumber(power);
         var bubbleDataIndex = settings.Bubbles.FindIndex(x => x.number == number);
         if (bubbleDataIndex == -1)

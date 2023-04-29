@@ -1,27 +1,28 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
+﻿using Controllers;
 using Sound;
-public class UILevelUpWindow : UIBaseWindow
+using TMPro;
+using UnityEngine;
+
+namespace UI
 {
-    [SerializeField]
-    private string levelUpSoundId = "LevelUp";
-    [SerializeField]
-    private TMP_Text level;
-
-    public void OpenWindow(int currentLevel)
+    public class UILevelUpWindow : UIBaseWindow
     {
-        level.text = currentLevel.ToString();
-        SessionController.Instance.PauseSession();
-        SoundsController.Instance.PlaySound(levelUpSoundId);
-        OpenWindow();
-    }
+        [SerializeField] private string levelUpSoundId = "LevelUp";
+        [SerializeField] private TMP_Text level;
 
-    public override void CloseWindow()
-    {
-        base.CloseWindow();
+        public void OpenWindow(int currentLevel)
+        {
+            level.text = currentLevel.ToString();
+            SessionController.Instance.PauseSession();
+            SoundsController.Instance.PlaySound(levelUpSoundId);
+            OpenWindow();
+        }
 
-        SessionController.Instance.StartSession();
+        protected override void CloseWindow()
+        {
+            base.CloseWindow();
+
+            SessionController.Instance.StartSession();
+        }
     }
 }

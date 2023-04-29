@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using Utils;
 
 namespace Bubbles
 {
-    public enum BubbleSide : int
+    public enum BubbleSide
     {
         None = -1,
         Right = 0,
@@ -18,39 +16,36 @@ namespace Bubbles
 
     public class Bubble : MonoBehaviour, IPoolObject
     {
-        [SerializeField]
-        private string id;
-        private Bubble[] linked = new Bubble[6];
-        private int power;
-        private int currentNumber;
+        [SerializeField] private string id;
+        
+        private readonly Bubble[] _linked = new Bubble[6];
+        private int _power;
+        private int _currentScore;
 
         public string Id
         {
-            get { return id; }
-            set { id = value; }
+            get => id;
+            set => id = value;
         }
 
         public int Power
         {
-            get { return power; }
+            get => _power;
             set
             {
-                power = value;
-                currentNumber = GetNumber(power);
+                _power = value;
+                _currentScore = GetNumber(_power);
             }
         }
 
-        public int CurrentNumber
-        {
-            get { return currentNumber; }
-        }
+        public int CurrentScore => _currentScore;
 
         public int X { get; set; }
         public int Y { get; set; }
 
         public Bubble GetLinked(BubbleSide side)
         {
-            return side == BubbleSide.None ? null : linked[(int)side];
+            return side == BubbleSide.None ? null : _linked[(int)side];
         }
 
         public void LinkBubble(BubbleSide side, Bubble bubble)
@@ -58,49 +53,40 @@ namespace Bubbles
             if (side == BubbleSide.None || !bubble)
                 return;
 
-            linked[(int)side] = bubble;
+            _linked[(int)side] = bubble;
         }
 
-        public void DetachBubble(BubbleSide side)
+        private void DetachBubble(Bubble bubble)
         {
-            if (side == BubbleSide.None)
-                return;
-
-            linked[(int)side] = null;
-        }
-
-        public void DetachBubble(Bubble bubble)
-        {
-            for (int i = 0; i < linked.Length; i++)
+            for (var i = 0; i < _linked.Length; i++)
             {
-                if (linked[i] == bubble)
-                {
-                    linked[i] = null;
-                    break;
-                }
+                if (_linked[i] != bubble) continue;
+                
+                _linked[i] = null;
+                break;
             }
         }
 
         public void Release()
         {
-            for (int i = 0; i < linked.Length; i++)
+            for (var i = 0; i < _linked.Length; i++)
             {
-                if (linked[i])
-                    linked[i].DetachBubble(this);
-                linked[i] = null;
+                if (_linked[i] == null) continue;
+                
+                _linked[i].DetachBubble(this);
+                _linked[i] = null;
             }
-            power = 1;
+            
+            _power = 1;
             X = -1;
             Y = -1;
         }
+        
         public override string ToString()
         {
             return $"[{X},{Y}];P:{Power};Pos:{transform.position}";
         }
 
-        public static int GetNumber(int power)
-        {
-            return (int)Mathf.Pow(GameConstants.BASE_NUMBER, power);
-        }
+        public static int GetNumber(int power) => (int)Mathf.Pow(GameConstants.BaseNumber, power);
     }
 }

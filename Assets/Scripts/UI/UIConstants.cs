@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class UIConstants
+﻿namespace UI
 {
-    public const string MAIN_MENU_WINDOW = "MainMenuWindow";
-    public const string LEVEL_UP_WINDOW = "LevelUpWindow";
+    public static class UIConstants
+    {
+        public const string MainMenuWindow = "MainMenuWindow";
+        public const string LevelUpWindow = "LevelUpWindow";
+    }
 }

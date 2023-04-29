@@ -1,13 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
-public class UIMainMenuWindow : UIBaseWindow
+namespace UI
 {
-    public void OnPlayButtonClick()
+    public class UIMainMenuWindow : UIBaseWindow
     {
-        CloseWindow();
-        SessionController.Instance.StartSession();
-    }
+        [SerializeField] private Button startGameBtn;
 
+        public override void Init()
+        {
+            base.Init();
+            startGameBtn.onClick.AddListener(OnPlayButtonClick);
+        }
+
+        private void OnPlayButtonClick()
+        {
+            CloseWindow();
+            SessionController.Instance.StartSession();
+        }
+
+    }
 }

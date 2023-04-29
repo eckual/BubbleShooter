@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Bubbles;
+using Utils;
+
 public class UISwapBubblesGroup : MonoBehaviour
 {
     public const string SWAP_TRIGGER = "Swap";
@@ -30,7 +32,7 @@ public class UISwapBubblesGroup : MonoBehaviour
 
     public void Init()
     {
-        bubbleSettings = ResourceManager.GetResource<BubblesSettings>(GameConstants.BUBBLE_SETTINGS);
+        bubbleSettings = ResourceManager.GetResource<BubblesSettings>(GameConstants.BubbleSettings);
 
         currentBubble.Init(Random.Range(1, bubbleSettings.Bubbles.Count - 1));
         nextBubble.Init(Random.Range(1, bubbleSettings.Bubbles.Count - 1));

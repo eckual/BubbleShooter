@@ -1,37 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using Utils;
 
 namespace Bubbles
 {
     public class BubbleProjectile : MonoBehaviour
     {
-        [SerializeField]
-        private SpriteRenderer back;
-        [SerializeField]
-        private SpriteRenderer border;
+        [SerializeField] private SpriteRenderer back;
+        [SerializeField] private SpriteRenderer border;
 
-        private BubblesSettings settings;
+        private BubblesSettings _settings;
 
-        public SpriteRenderer Back
-        {
-            get { return back; }
-        }
-
-        public SpriteRenderer Border
-        {
-            get { return border; }
-        }
-
-        public BubblesSettings Settings
+        private BubblesSettings Settings
         {
             get
             {
-                if (!settings)
-                {
-                    settings = ResourceManager.GetResource<BubblesSettings>(GameConstants.BUBBLE_SETTINGS);
-                }
-                return settings;
+                if (_settings == null) _settings = ResourceManager.GetResource<BubblesSettings>(GameConstants.BubbleSettings);
+                return _settings;
             }
         }
 
@@ -45,5 +29,6 @@ namespace Bubbles
             back.color = bubbleData.backColor;
             border.color = bubbleData.borderColor;
         }
+        
     }
 }

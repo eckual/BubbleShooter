@@ -1,137 +1,133 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Bubbles;
+using Controllers;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using Bubbles;
+using Utils;
 
-public class UIBubblesInfoWindow : UIBaseWindow
+namespace UI
 {
-    public const string DEFAULT_BUBBLE_INFO_ID = "BubbleInfo";
-    [SerializeField]
-    private UISwapBubblesGroup projectileSelectionGroup;
-
-    [SerializeField]
-    private UIBubbleInfosPool bubbleInfosPool;
-    [SerializeField]
-    private UINotification perfectNotification;
-
-    private ScoreController scoreController;
-    private int currentLevel;
-
-    [Header("Level")]
-    [SerializeField]
-    private TMP_Text score;
-    [SerializeField]
-    private TMP_Text currentLevelText;
-    [SerializeField]
-    private Image currentLevelImage;
-    [SerializeField]
-    private TMP_Text nextLevelText;
-    [SerializeField]
-    private Image nextLevelImage;
-    [SerializeField]
-    private UIProgressBar levelProgressBar;
-    [SerializeField]
-    private Image progressBarFillImage;
-
-    private List<UIBubbleInfo> bubbleInfos = new List<UIBubbleInfo>();
-    private BubblesSettings bubblesSettings;
-
-    public override void Init()
+    public class UIBubblesInfoWindow : UIBaseWindow
     {
-        base.Init();
-        var sessionController = SessionController.Instance;
-        var bubblesController = sessionController.BubblesController;
-        bubblesController.OnBubbleAdded += OnBubblesAdded;
-        bubblesController.OnBubbleReleased += OnBubbleReleased;
-        bubblesController.OnBubblesCleared += perfectNotification.Show;
-        bubblesSettings = ResourceManager.GetResource<BubblesSettings>(GameConstants.BUBBLE_SETTINGS);
+        private const string DEFAULT_BUBBLE_INFO_ID = "BubbleInfo";
+    
+        [Header("UI")]
+        [SerializeField] private UISwapBubblesGroup projectileSelectionGroup;
+        [SerializeField] private UIBubbleInfosPool bubbleInfosPool;
+        [SerializeField] private UINotification perfectNotification;
+    
+        [Header("Level")]
+        [SerializeField] private TMP_Text score;
+        [SerializeField] private TMP_Text currentLevelText;
+        [SerializeField] private Image currentLevelImage;
+        [SerializeField] private TMP_Text nextLevelText;
+        [SerializeField] private Image nextLevelImage;
+        [SerializeField] private UIProgressBar levelProgressBar;
+        [SerializeField] private Image progressBarFillImage;
 
-        for (int i = 0; i < bubblesController.Bubbles.Count; i++)
+        private List<UIBubbleInfo> _bubbleInfos = new List<UIBubbleInfo>();
+        private BubblesSettings _bubblesSettings;
+        private ScoreController _scoreController;
+        private int _currentLevel;
+
+        public override void Init()
         {
-            var bubble = bubblesController.Bubbles[i];
-            OnBubblesAdded(bubble);
+            base.Init();
+
+            var sessionController = SessionController.Instance;
+            var bubblesController = sessionController.BubblesController;
+            bubblesController.OnBubbleAdded += OnBubblesAdded;
+            bubblesController.OnBubbleReleased += OnBubbleReleased;
+            bubblesController.OnBubblesCleared += perfectNotification.Show;
+            _bubblesSettings = ResourceManager.GetResource<BubblesSettings>(GameConstants.BubbleSettings);
+
+            for (var i = 0; i < bubblesController.Bubbles.Count; i++)
+            {
+                var bubble = bubblesController.Bubbles[i];
+                OnBubblesAdded(bubble);
+            }
+
+            _scoreController = sessionController.ScoreController;
+            _scoreController.OnScoreChanged += OnScoreChanged;
+            OnScoreChanged(_scoreController.Score);
+
+            projectileSelectionGroup.Init();
         }
 
-        scoreController = sessionController.ScoreController;
-        scoreController.OnScoreChanged += OnScoreChanged;
-        OnScoreChanged(scoreController.Score);
-
-        projectileSelectionGroup.Init();
-    }
-
-    private void OnBubblesAdded(Bubble bubble)
-    {
-        if (bubbleInfos.FindIndex(x => x.Source == bubble) == -1)
+        private void OnBubblesAdded(Bubble inNewBubble)
         {
+            if (_bubbleInfos.FindIndex(bubble=> bubble.Source == inNewBubble) != -1) return;
+            
             var bubbleInfo = bubbleInfosPool.GetOrInstantiate(DEFAULT_BUBBLE_INFO_ID);
-            bubbleInfo.Init(bubble);
-            bubbleInfos.Add(bubbleInfo);
+            bubbleInfo.Init(inNewBubble);
+            _bubbleInfos.Add(bubbleInfo);
             bubbleInfo.gameObject.SetActive(true);
         }
-    }
 
-    private void OnBubbleReleased(Bubble bubble)
-    {
-        var bubbleInfo = bubbleInfos.Find(x => x.Source == bubble);
-        if (bubbleInfo)
+        private void OnBubbleReleased(Bubble bubble)
         {
+            var bubbleInfo = _bubbleInfos.FirstOrDefault(b => b.Source == bubble);
+            if (bubbleInfo == null) 
+                throw new NullReferenceException("released bubble should not be null");
+            
             bubbleInfosPool.Release(bubbleInfo);
             bubbleInfo.gameObject.SetActive(false);
-            bubbleInfos.Remove(bubbleInfo);
+            _bubbleInfos.Remove(bubbleInfo);
         }
-    }
 
-    private void OnScoreChanged(int newScore)
-    {
-        score.text = newScore.ToString();
-
-        var level = scoreController.LevelSettings.GetLevelByScore(newScore);
-        if (currentLevel != level)
+        private void OnScoreChanged(int newScore)
         {
-            currentLevel = level;
-            ChangeLevel();
+            score.text = newScore.ToString();
+
+            var level = _scoreController.LevelSettings.GetLevelByScore(newScore);
+            if (_currentLevel != level)
+            {
+                _currentLevel = level;
+                ChangeLevel();
+            }
+
+            levelProgressBar.SetData(newScore, _scoreController.LevelSettings.GetMaxScoreByLevel(_currentLevel - 1),
+                _scoreController.LevelSettings.GetMaxScoreByLevel(_currentLevel));
         }
-        levelProgressBar.SetData(newScore,
-                                 scoreController.LevelSettings.GetMaxScoreByLevel(currentLevel - 1),
-                                 scoreController.LevelSettings.GetMaxScoreByLevel(currentLevel));
-    }
 
-    private void ChangeLevel()
-    {
-        currentLevelText.text = currentLevel.ToString();
-        nextLevelText.text = (currentLevel + 1).ToString();
-
-        var index = currentLevel % bubblesSettings.Bubbles.Count;
-        var color = bubblesSettings.Bubbles[index].backColor;
-        currentLevelImage.color = color;
-        progressBarFillImage.color = color;
-        if (index == bubblesSettings.Bubbles.Count - 1)
+        private void ChangeLevel()
         {
-            nextLevelImage.color = bubblesSettings.Bubbles[0].backColor;
+            currentLevelText.text = _currentLevel.ToString();
+            nextLevelText.text = (_currentLevel + 1).ToString();
+
+            var index = _currentLevel % _bubblesSettings.Bubbles.Count;
+            var color = _bubblesSettings.Bubbles[index].backColor;
+            currentLevelImage.color = color;
+            progressBarFillImage.color = color;
+            nextLevelImage.color = index == _bubblesSettings.Bubbles.Count - 1 ? _bubblesSettings.Bubbles[0].backColor : _bubblesSettings.Bubbles[index + 1].backColor;
+
+            var levelUpWindow = UIMainController.Instance.GetWindow<UILevelUpWindow>(UIConstants.LevelUpWindow);
+            
+            if (levelUpWindow == null)
+                return;
+            
+            levelUpWindow.OpenWindow(_currentLevel);
         }
-        else
+
+        public void OnPauseButtonClick()
         {
-            nextLevelImage.color = bubblesSettings.Bubbles[index + 1].backColor;
+            SessionController.Instance.PauseSession();
+            var window = UIMainController.Instance.GetWindow<UIMainMenuWindow>(UIConstants.MainMenuWindow);
+
+            if (window == null)
+                throw new NullReferenceException($"{UIConstants.MainMenuWindow} is null ");
+            
+            window.OpenWindow();
         }
 
-        var levelUpWindow = UIMainController.Instance.GetWindow<UILevelUpWindow>(UIConstants.LEVEL_UP_WINDOW);
-        levelUpWindow?.OpenWindow(currentLevel);
-    }
-
-    public void OnPauseButtonClick()
-    {
-        SessionController.Instance.PauseSession();
-        var window = UIMainController.Instance.GetWindow<UIMainMenuWindow>(UIConstants.MAIN_MENU_WINDOW);
-        window?.OpenWindow();
-    }
-
-    private void LateUpdate()
-    {
-        for (int i = bubbleInfos.Count - 1; i >= 0; i--)
+        private void LateUpdate()
         {
-            bubbleInfos[i].FollowSource();
+            for (var i = 0; i < _bubbleInfos.Count; i++) 
+                _bubbleInfos[i].FollowSource();
         }
+        
     }
 }

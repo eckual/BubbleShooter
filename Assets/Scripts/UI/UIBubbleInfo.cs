@@ -1,45 +1,48 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using Bubbles;
+using Extensions;
 using TMPro;
-using Bubbles;
+using UnityEngine;
+using Utils;
 
-public class UIBubbleInfo : MonoBehaviour, IUIItem<Bubble>, IPoolObject
+namespace UI
 {
-    [SerializeField]
-    protected string id;
-    [SerializeField]
-    protected TMP_Text infoText;
-
-    public Bubble Source { get; set; }
-
-    public string Id
+    public class UIBubbleInfo : MonoBehaviour, IUIItem<Bubble>, IPoolObject
     {
-        get { return id; }
-        set { id = value; }
-    }
+        [SerializeField]
+        protected string id;
+        [SerializeField]
+        protected TMP_Text infoText;
 
-    public void Init(Bubble bubble)
-    {
-        Source = bubble;
-        if (Source)
+        public Bubble Source { get; set; }
+
+        public string Id
         {
-            infoText.text =Source.CurrentNumber.ToString();
+            get => id;
+            set => id = value;
+        }
+
+        public void Init(Bubble bubble)
+        {
+            Source = bubble;
+            if (Source == null) return;
+            
+            infoText.text = Source.CurrentScore.ToString();
             transform.position = new Vector3(Source.transform.position.x, Source.transform.position.y, transform.position.z);
         }
-    }
 
-    public void FollowSource()
-    {
-        if (transform.position.y != Source.transform.position.y)
+        public void FollowSource()
         {
-            transform.position = new Vector3(Source.transform.position.x, Source.transform.position.y, transform.position.z);
+            var sourcePos = Source.transform.position;
+            var transformPos = transform.position;
+        
+            if (sourcePos.ApproximatelyEqual(transformPos,0.1f,true)) return;
+            transform.position = new Vector3(sourcePos.x, sourcePos.y, transform.position.z);
         }
-    }
 
-    public void Release()
-    {
-        infoText.text = string.Empty;
-        Source = null;
+        public void Release()
+        {
+            infoText.text = string.Empty;
+            Source = null;
+        }
     }
 }

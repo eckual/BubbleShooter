@@ -1,55 +1,49 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public enum WindowState
+namespace UI
 {
-    Opened,
-    Closed
-}
-
-public class UIBaseWindow : MonoBehaviour
-{
-    [SerializeField]
-    protected string id;
-    [SerializeField]
-    protected WindowState windowState;
-    public event Action<WindowState> OnWindowStateChanged;
-
-    public virtual string Id
+    public enum WindowState
     {
-        get { return id; }
+        Opened,
+        Closed
     }
 
-    public WindowState WindowState
+    public class UIBaseWindow : MonoBehaviour
     {
-        get { return windowState; }
-        set
+        [SerializeField] protected string id;
+        [SerializeField] protected WindowState windowState;
+        public event Action<WindowState> OnWindowStateChanged;
+
+        public virtual string Id => id;
+
+        public WindowState WindowState
         {
-            if (windowState != value)
+            get => windowState;
+            private set
             {
+                if (windowState == value) return;
                 windowState = value;
                 OnWindowStateChanged?.Invoke(WindowState);
             }
         }
+
+        public virtual void Init()
+        {
+
+        }
+
+        public virtual void OpenWindow()
+        {
+            gameObject.SetActive(true);
+            WindowState = WindowState.Opened;
+        }
+
+        protected virtual void CloseWindow()
+        {
+            gameObject.SetActive(false);
+            WindowState = WindowState.Closed;
+        }
+
     }
-
-    public virtual void Init()
-    {
-
-    }
-
-    public virtual void OpenWindow()
-    {
-        gameObject.SetActive(true);
-        WindowState = WindowState.Opened;
-    }
-
-    public virtual void CloseWindow()
-    {
-        gameObject.SetActive(false);
-        WindowState = WindowState.Closed;
-    }
-
 }

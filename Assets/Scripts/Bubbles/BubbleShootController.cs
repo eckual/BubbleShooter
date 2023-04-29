@@ -1,144 +1,127 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using Controllers;
+using Extensions;
 using UnityEngine;
 
 namespace Bubbles
 {
-    public class BubbleShootController : MonoBehaviour
+    public class BubbleShootController : ControllerBase
     {
-        [SerializeField]
-        private PlayerRaycastController raycastController;
-        private List<Vector3> cachedPath = new List<Vector3>();
-
-        [SerializeField]
-        private float projectileSpeed;
-        [SerializeField]
-        private BubbleProjectile projectile;
-
-        private Vector3 initialPosition;
-        private Vector3 targetPosition;
-        private bool isMoving = false;
-        private int cachedX;
-        private int cachedY;
-
         public event Action OnShootStarted;
         public event Action OnShootEnded;
+        
+        [SerializeField] private PlayerRaycastController raycastController;
+        [SerializeField] private BubbleProjectile projectile;
+        [SerializeField] private float projectileSpeed;
 
-        private SessionController sessionController;
+        private SessionController _sessionController;
+        private List<Vector3> _cachedPath = new();
+        private Vector3 _initialPosition;
+        private Vector3 _targetPosition;
+        private bool _isMoving = false;
+        private int _cachedX;
+        private int _cachedY;
 
-        public void Init()
+        public override void Init()
         {
-            sessionController = SessionController.Instance;
+            _sessionController = SessionController.Instance;
             raycastController.OnPathChanged += OnPathChanged;
             raycastController.OnBubbleChanged += OnBubbleChanged;
             raycastController.OnStopRaycasting += OnStopRaycasting;
-            initialPosition = projectile.transform.position;
-            targetPosition = initialPosition;
-            projectile.gameObject.SetActive(isMoving);
+            _initialPosition = projectile.transform.position;
+            _targetPosition = _initialPosition;
+            projectile.gameObject.SetActive(_isMoving);
         }
 
         private void OnBubbleChanged(int x, int y, Vector3 position)
         {
-            if (!isMoving)
+            if (_isMoving) return;
+
+            var bubblesController = _sessionController.BubblesController;
+            if (!bubblesController.Bubbles[x, y])
             {
-                var bubblesController = sessionController.BubblesController;
-                if (!bubblesController.Bubbles[x, y])
-                {
-                    targetPosition = position;
-                    cachedX = x;
-                    cachedY = y;
-                }
-                else
-                {
-                    cachedX = PlayerRaycastController.DEFAULT_X;
-                    cachedY = PlayerRaycastController.DEFAULT_Y;
-                }
+                _targetPosition = position;
+                _cachedX = x;
+                _cachedY = y;
+                return;
             }
+
+            _cachedX = PlayerRaycastController.DEFAULT_X;
+            _cachedY = PlayerRaycastController.DEFAULT_Y;
         }
 
         private void OnPathChanged(List<Vector3> path)
         {
-            if (!isMoving)
+            if (_isMoving) return;
+            
+            _cachedPath.Clear();
+            _cachedPath.AddRange(path);
+            if (_cachedPath.Count > 0)
             {
-                cachedPath.Clear();
-                cachedPath.AddRange(path);
-                if (cachedPath.Count > 0)
-                {
-                    cachedPath[cachedPath.Count - 1] = targetPosition;
-                }
-
-                if(cachedX == PlayerRaycastController.DEFAULT_X ||
-                   cachedY == PlayerRaycastController.DEFAULT_Y)
-                {
-                    cachedPath.Clear();
-                }
+                _cachedPath[_cachedPath.Count - 1] = _targetPosition;
             }
+
+            if(_cachedX == PlayerRaycastController.DEFAULT_X || _cachedY == PlayerRaycastController.DEFAULT_Y)
+                _cachedPath.Clear();
         }
 
         private void StartShoot()
         {
-            isMoving = true;
-            projectile.gameObject.SetActive(isMoving);
+            _isMoving = true;
+            projectile.gameObject.SetActive(_isMoving);
             OnShootStarted?.Invoke();
 
-            projectile.Init(sessionController.BubblesController.CurrentPower);
+            projectile.Init(_sessionController.BubblesController.CurrentPower);
         }
 
         private void EndShoot()
         {
-            isMoving = false;
-            projectile.transform.position = initialPosition;
+            _isMoving = false;
+            projectile.transform.position = _initialPosition;
             projectile.transform.rotation = Quaternion.identity;
-            projectile.gameObject.SetActive(isMoving);
+            projectile.gameObject.SetActive(_isMoving);
 
-            var bubblesController = sessionController.BubblesController;
-            bubblesController.SpawnBubble(cachedX, cachedY, bubblesController.CurrentPower);
+            var bubblesController = _sessionController.BubblesController;
+            bubblesController.SpawnBubble(_cachedX, _cachedY, bubblesController.CurrentPower);
             bubblesController.MoveBubbles();
             OnShootEnded?.Invoke();
         }
 
         private void OnStopRaycasting()
         {
-            if(sessionController.BubblesController.Locked)
+            if(_sessionController.BubblesController.Locked)
                 return;
 
-            if (!isMoving && cachedPath.Count > 0)
-            {
-                StartShoot();
-            }
+            if (!_isMoving && _cachedPath.Count > 0) StartShoot();
         }
 
         private void Update()
         {
-            if (isMoving)
+            if (!_isMoving) return;
+            if (_cachedPath.Count > 0)
             {
-                if (cachedPath.Count > 0)
+                var point = _cachedPath[0];
+                if (point.ApproximatelyEqual(projectile.transform.position))
                 {
-                    var point = cachedPath[0];
-                    if (point.ApproximatelyEqual(projectile.transform.position))
-                    {
-                        cachedPath.RemoveAt(0);
-                    }
-                    else
-                    {
-
-                        var direction = point - projectile.transform.position;
-                        var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
-                        projectile.transform.rotation = Quaternion.Slerp(projectile.transform.rotation,
-                                                                         Quaternion.AngleAxis(angle, Vector3.forward),
-                                                                         Time.deltaTime * projectileSpeed);
-
-                        projectile.transform.position = Vector3.MoveTowards(projectile.transform.position,
-                                                                            point,
-                                                                            Time.deltaTime * projectileSpeed);
-                    }
+                    _cachedPath.RemoveAt(0);
                 }
                 else
                 {
-                    EndShoot();
+
+                    var direction = point - projectile.transform.position;
+                    var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
+                    projectile.transform.rotation = Quaternion.Slerp(projectile.transform.rotation,
+                        Quaternion.AngleAxis(angle, Vector3.forward),
+                        Time.deltaTime * projectileSpeed);
+
+                    projectile.transform.position = Vector3.MoveTowards(projectile.transform.position,
+                        point,
+                        Time.deltaTime * projectileSpeed);
                 }
             }
+            else
+                EndShoot();
         }
     }
 }

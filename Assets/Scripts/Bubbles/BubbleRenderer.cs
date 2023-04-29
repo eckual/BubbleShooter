@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 namespace Bubbles
 {
@@ -15,8 +16,8 @@ namespace Bubbles
 
         private void OnEnable()
         {
-            var settings = ResourceManager.GetResource<BubblesSettings>(GameConstants.BUBBLE_SETTINGS);
-            var itemIndex = settings.Bubbles.FindIndex(x => x.number == bubble.CurrentNumber);
+            var settings = ResourceManager.GetResource<BubblesSettings>(GameConstants.BubbleSettings);
+            var itemIndex = settings.Bubbles.FindIndex(x => x.number == bubble.CurrentScore);
             if(itemIndex != -1)
             {
                 var item = settings.Bubbles[itemIndex];

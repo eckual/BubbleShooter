@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UI;
 using UnityEngine;
+using Utils;
 
 public class UIMainController : MonoSingleton<UIMainController>
 {

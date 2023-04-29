@@ -1,65 +1,60 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
-public interface IPoolObject
+namespace Utils
 {
-    string Id { get; set; }
-    void Release();
-}
-
-public class Pool<T> : MonoBehaviour where T:MonoBehaviour, IPoolObject
-{
-    [SerializeField]
-    private Transform root = null;
-    [SerializeField]
-    private List<T> templates = new List<T>();
-    private List<T> busyObjects = new List<T>();
-    private List<T> freeObjects = new List<T>();
-
-    public Transform Root
+    public interface IPoolObject
     {
-        get { return root; }
+        string Id { get; set; }
+        void Release();
     }
 
-    public T GetOrInstantiate(string id)
+    public class Pool<T> : MonoBehaviour where T:MonoBehaviour, IPoolObject
     {
-        var freeObject = freeObjects.Find(x => x.Id == id);
-        if (freeObject)
+        [SerializeField] private Transform root = null;
+        [SerializeField] private List<T> templates = new List<T>();
+        
+        private List<T> _busyObjects = new List<T>();
+        private List<T> _freeObjects = new List<T>();
+
+        public Transform Root => root;
+
+        public T GetOrInstantiate(string id)
         {
-            freeObjects.Remove(freeObject);
-            busyObjects.Add(freeObject);
-            return freeObject;
-        }
-        else
-        {
-            var template = templates.Find(x => x.Id == id);
-            if (template)
+            var freeObject = _freeObjects.FirstOrDefault(fO => fO.Id == id);
+            if (freeObject)
             {
-                var clone = Instantiate(template, root);
-                busyObjects.Add(clone);
-                return clone;
+                _freeObjects.Remove(freeObject);
+                _busyObjects.Add(freeObject);
+                return freeObject;
             }
-        }
-        return null;
-    }
 
-    public void Release(T busyObject)
-    {
-        if (!freeObjects.Contains(busyObject))
+            var template = templates.FirstOrDefault(temp => temp.Id == id);
+            if (template == null) return null;
+            
+            var clone = Instantiate(template, root);
+            _busyObjects.Add(clone);
+            return clone;
+        }
+
+        public void Release(T busyObject)
         {
+            if (_freeObjects.Contains(busyObject)) return;
+            
             busyObject.Release();
-            busyObjects.Remove(busyObject);
-            freeObjects.Add(busyObject);
+            _busyObjects.Remove(busyObject);
+            _freeObjects.Add(busyObject);
         }
-    }
 
-    public void ReleaseAll()
-    {
-        for(int i = busyObjects.Count -1 ; i >= 0; i--)
+        [Button] public void ReleaseAll()
         {
-            var busyObject = busyObjects[i];
-            Release(busyObject);
+            for(var i = 0; i < _busyObjects.Count; i++)
+            {
+                var busyObject = _busyObjects[i];
+                Release(busyObject);
+            }
         }
     }
 }

@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Audios
+  m_EditorClassIdentifier: 
+  m_GroupName: Audios
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 24b8af40424d9fa41a1f0b2e05372703
+  m_SerializeEntries:
+  - m_GUID: a11aaf4efef28ce45b30c2da3116ac76
+    m_Address: background-game-145867
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 7478151cf36724a7dada558f746c3633
+    m_Address: LevelUp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 7bd6b897eb5ca4b7d88a205c4a51640c
+    m_Address: Merge
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 19f89c6e740e7447f9e12a8310d3e973
+    m_Address: ShootFinish
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d46323e22e74e46baa241cbf48c85671
+    m_Address: ShootStart
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 556aa14bb9111274f8ac7cfe27cd8a39, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 6c2d0f3135786c04f9068eb1d470ddec, type: 2}
+    - {fileID: 11400000, guid: f9741c1aab12e014483db078c8f29b5c, type: 2}
