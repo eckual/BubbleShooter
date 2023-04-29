@@ -10,7 +10,6 @@ namespace UI
         private const string BACKGROUND_AUDIO ="Background";
         [SerializeField] private Button startGameBtn;
         [SerializeField] private Image triangleImage;
-        private int _colorAnimationId = 1;
 
         public override void Init()
         {
@@ -20,14 +19,15 @@ namespace UI
             isInitialized = true;
         }
 
-        private void AnimateTriangleImage() => triangleImage.DOColor(Color.gray, 1.2f).SetLoops(-1,LoopType.Yoyo).SetId(_colorAnimationId);
+        private void AnimateTriangleImage() => triangleImage.DOColor(Color.gray, 1.2f).SetLoops(-1, LoopType.Yoyo);
 
         private void OnPlayButtonClick()
         {
             CloseWindow();
             SessionController.Instance.StartSession();
             SoundsController.Instance.StopSound(BACKGROUND_AUDIO);
-            DOTween.Kill(_colorAnimationId);
+            DOTween.Kill(triangleImage.color);
+            triangleImage.color = Color.white;
         }
 
         public override void OpenWindow()
