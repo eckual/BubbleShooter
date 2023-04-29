@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UI;
-using UnityEngine;
-using Utils;
+﻿using Utils;
 
-public class UIBubbleInfosPool : Pool<UIBubbleInfo>
+namespace UI
 {
+    public class UIBubbleInfosPool : Pool<UIBubbleInfo>
+    {
+    }
 }

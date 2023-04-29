@@ -7,7 +7,7 @@ namespace Extensions
     {
         public static bool IsNull<T>(this List<T> inList) => inList == null;
         
-        public static bool IsEmpty<T>(this List<T> inList) => !inList.Any(); //exp : !inList.Any is so useful when the list isnt empty
+        public static bool IsEmpty<T>(this List<T> inList) => !inList.Any(); //exp : !inList.Any() is so useful when the list isnt empty
         
         public static List<T> ResetList<T>(this List<T> inList)
         {

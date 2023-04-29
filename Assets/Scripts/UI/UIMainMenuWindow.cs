@@ -20,7 +20,7 @@ namespace UI
             isInitialized = true;
         }
 
-        private void AnimateTriangleImage() => triangleImage.DOColor(Color.gray, 2f).SetLoops(-1,LoopType.Yoyo).SetId(_colorAnimationId);
+        private void AnimateTriangleImage() => triangleImage.DOColor(Color.gray, 1.2f).SetLoops(-1,LoopType.Yoyo).SetId(_colorAnimationId);
 
         private void OnPlayButtonClick()
         {

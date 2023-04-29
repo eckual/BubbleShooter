@@ -5,6 +5,7 @@ namespace UI
 {
     public enum WindowState
     {
+        None,
         Opened,
         Closed
     }

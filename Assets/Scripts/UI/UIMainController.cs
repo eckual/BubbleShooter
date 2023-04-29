@@ -1,73 +1,39 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UI;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
-public class UIMainController : MonoSingleton<UIMainController>
+namespace UI
 {
-    [SerializeField]
-    private RectTransform windowsRoot;
-    [SerializeField]
-    private List<UIBaseWindow> windows = new List<UIBaseWindow>();
-    private Dictionary<string, UIBaseWindow> windowsDict = new Dictionary<string, UIBaseWindow>();
-
-    public event Action OnWindowsReady;
-    public event Action<UIBaseWindow> OnWindowAdded;
-    public event Action<string> OnWindowRemoved;
-
-    public override void Init()
+    public class UIMainController : MonoSingleton<UIMainController>
     {
-        base.Init();
+        [SerializeField] private RectTransform windowsRoot;
+        [SerializeField] private List<UIBaseWindow> windows = new List<UIBaseWindow>();
+        
+        private Dictionary<string, UIBaseWindow> _currentUIWindows = new Dictionary<string, UIBaseWindow>();
 
-        for(int i = 0; i < windows.Count; i++)
+        public override void Init()
         {
-            var window = windows[i];
-            var cloned = Instantiate(window, windowsRoot);
-            switch (cloned.WindowState)
+            base.Init();
+
+            for(int i = 0; i < windows.Count; i++)
             {
-                case WindowState.Opened: cloned.gameObject.SetActive(true);break;
-                case WindowState.Closed: cloned.gameObject.SetActive(false);break;
+                var window = windows[i];
+                var cloned = Instantiate(window, windowsRoot);
+                switch (cloned.WindowState)
+                {
+                    case WindowState.Opened: cloned.gameObject.SetActive(true);break;
+                    case WindowState.Closed: cloned.gameObject.SetActive(false);break;
+                    case WindowState.None: break;
+                }
+                cloned.Init();
+                _currentUIWindows.Add(cloned.Id, cloned);
             }
-            cloned.Init();
-            windowsDict.Add(cloned.Id, cloned);
         }
 
-        OnWindowsReady?.Invoke();
-    }
-
-
-    public UIBaseWindow GetWindow(string id)
-    {
-        return windowsDict.ContainsKey(id) ? windowsDict[id] : null;
-    }
-
-    public T GetWindow<T>(string id) where T: UIBaseWindow
-    {
-        return windowsDict.ContainsKey(id) ? windowsDict[id] as T : null;
-    }
-
-    public void AddWindow(UIBaseWindow window)
-    {
-        if (!windowsDict.ContainsKey(window.Id))
+        public T GetWindow<T>(string id) where T: UIBaseWindow
         {
-            var cloned = Instantiate(window, windowsRoot);
-            cloned.Init();
-            windowsDict.Add(cloned.Id, cloned);
-            OnWindowAdded(cloned);
+            return _currentUIWindows.ContainsKey(id) ? _currentUIWindows[id] as T : null;
         }
-    }
 
-    public void RemoveWindow(string id)
-    {
-        if (windowsDict.ContainsKey(id))
-        {
-            var window = windowsDict[id];
-            windowsDict.Remove(id);
-            Destroy(window.gameObject);
-            OnWindowRemoved?.Invoke(id);
-        }
     }
-
 }

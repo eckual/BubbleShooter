@@ -1,40 +1,44 @@
-﻿using UnityEngine;
-using Bubbles;
-using Controllers;
+﻿using Bubbles;
+using UnityEngine;
 using Utils;
 
-public class SessionController : MonoSingleton<SessionController>
+namespace Controllers
 {
-    [SerializeField] private BubblesController bubblesController;
-    [SerializeField] private PlayerController playerController;
-    [SerializeField] private ScoreController scoreController;
-    [SerializeField] private VFXController vfxController;
-
-    public BubblesController BubblesController => bubblesController;
-    public PlayerController PlayerController => playerController;
-    public ScoreController ScoreController => scoreController;
-
-    public bool IsRunning { get; private set; }
-
-    public override void ReleaseReferences()
+    public class SessionController : MonoSingleton<SessionController>
     {
-        base.ReleaseReferences();
-        bubblesController = null;
-        playerController = null;
-        scoreController = null;
-        vfxController = null;
-    }
+        [SerializeField] private BubblesController bubblesController;
+        [SerializeField] private PlayerController playerController;
+        [SerializeField] private ScoreController scoreController;
+        [SerializeField] private VFXController vfxController;
 
-    public override void Init()
-    {
-        scoreController.Init();
-        bubblesController.Init();
-        playerController.Init();
-        vfxController.Init();
-    }
+        public BubblesController BubblesController => bubblesController;
+        public PlayerController PlayerController => playerController;
+        public ScoreController ScoreController => scoreController;
 
-    public void StartSession() => IsRunning = true;
+        public bool IsRunning { get; private set; }
 
-    public void PauseSession() => IsRunning = false;
+        public override void ReleaseReferences()
+        {
+            base.ReleaseReferences();
+            bubblesController = null;
+            playerController = null;
+            scoreController = null;
+            vfxController = null;
+        }
+
+        public override void Init()
+        {
+            scoreController.Init();
+            bubblesController.Init();
+            playerController.Init();
+            vfxController.Init();
+        }
+
+        public void StartSession() => IsRunning = true;
+
+        public void PauseSession() => IsRunning = false;
+        
+        //todo : ass game over system
     
+    }
 }

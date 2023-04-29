@@ -177,14 +177,11 @@ namespace Bubbles
                 var bubbleSide = i;
                 var link = bubble.GetLinked((BubbleSide)bubbleSide);
 
-                if (link == null || link.Power != bubble.Power || prevBubble == link)
-                    continue;
-
-                if (!linked.Contains(link))
-                {
-                    linked.Add(link);
-                    CheckBubblePower(bubble, link, linked);
-                }
+                if (link == null || link.Power != bubble.Power || prevBubble == link) continue;
+                if (linked.Contains(link)) continue;
+                
+                linked.Add(link);
+                CheckBubblePower(bubble, link, linked);
             }
         }
 
@@ -261,11 +258,11 @@ namespace Bubbles
 
         private void CheckMergedFall()
         {
-            _askedAttached.Clear();
-            for (int i = 0; i < _merged.Count; i++)
+            _askedAttached.ResetList();
+            
+            foreach (var bubble in _merged)
             {
-                var bubble = _merged[i];
-                for(int j = 0; j < SIDES_COUNT; j++)
+                for(var j = 0; j < SIDES_COUNT; j++)
                 {
                     _askedAttached.Clear();
 
@@ -276,12 +273,10 @@ namespace Bubbles
                     var attached = false;
                     CheckAttachedToTop(link, ref attached);
 
-                    if (!attached)
-                    {
-                        if (!_falling.Contains(link))
-                            _falling.Add(link);
-                        GetAllLinks(link, _falling);
-                    }
+                    if (attached) continue;
+                    if (!_falling.Contains(link))
+                        _falling.Add(link);
+                    GetAllLinks(link, _falling);
                 }
             }
         }
@@ -303,7 +298,7 @@ namespace Bubbles
             {
                 var x = bubble.X;
                 var y = bubble.Y;
-                var power = Mathf.Clamp(bubble.Power + _merged.Count, _minPower, _maxPower);
+                var power = Mathf.Clamp(bubble.Power * (int)Mathf.Pow(2, _merged.Count), _minPower, _maxPower);
 
                 _merged.Add(bubble);
                 CheckAutomatic(power, ref x, ref y);
@@ -318,7 +313,7 @@ namespace Bubbles
                     involvedCount = _merged.Count
                 });
 
-                for (var i = _merged.Count -1 ; i >= 0; i--)
+                for (var i = 0; i < _merged.Count; i++)
                 {
                     ReleaseBubble(_merged[i]);
                 }
@@ -339,12 +334,13 @@ namespace Bubbles
                         }
 
                         _notFalling.Clear();
-                        if (power == _maxPower) Explode(newBubble);
+                        if (power >= 11) Explode(newBubble);
                     }
                 }
             }
             CheckToClear();
         }
+
 
         private void CheckToClear()
         {

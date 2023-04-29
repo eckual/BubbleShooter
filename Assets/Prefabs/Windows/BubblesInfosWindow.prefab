@@ -1848,7 +1848,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 420cd523eebbc774cb773e4e0ae5c622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  notificaton: {fileID: 4840920779779554349}
+  notification: {fileID: 0}
 --- !u!95 &3052556154194225812
 Animator:
   serializedVersion: 4
@@ -2779,7 +2779,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: BubbleInfosWindow
-  windowState: 0
+  windowState: 1
   projectileSelectionGroup: {fileID: 3252594655517624746}
   bubbleInfosPool: {fileID: 8949973997993723214}
   perfectNotification: {fileID: 2578616868586250145}

@@ -1,19 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class UINotification : MonoBehaviour
+namespace UI
 {
-    [SerializeField]
-    private GameObject notificaton;
-
-    public void Show()
+    public class UINotification : MonoBehaviour
     {
-        notificaton.SetActive(true);
-    }
+        [SerializeField] private GameObject notification;
 
-    public void Hide()
-    {
-        notificaton.SetActive(false);
+        public void Show() => notification.SetActive(true);
+
+        public void Hide() => notification.SetActive(false);
     }
 }

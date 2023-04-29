@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public interface IUIItem<T>
+﻿namespace UI
 {
-    T Source { get; set; }
+    public interface IUIItem<T>
+    {
+        T Source { get; set; }
+    }
 }

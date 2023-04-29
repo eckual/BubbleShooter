@@ -3116,14 +3116,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.92353517, g: 0.7490566, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.9, b: 0.99268425, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a474cfa21cfa60f408cbc092ebbe67cb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4dc54a179f9af684d8feb1cac40856e1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3184,7 +3184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: MainMenuWindow
-  windowState: 0
+  windowState: 1
   startGameBtn: {fileID: 5000311415657049926}
   triangleImage: {fileID: 8192345293679966527}
 --- !u!1 &5000311415616666452
@@ -3329,7 +3329,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.97647065, g: 0.27450982, b: 0.25882354, a: 1}
+  m_Color: {r: 0, g: 0.2864033, b: 0.8962264, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
