@@ -37,8 +37,6 @@ namespace Controllers
         public void StartSession() => IsRunning = true;
 
         public void PauseSession() => IsRunning = false;
-        
-        //todo : ass game over system
     
     }
 }
