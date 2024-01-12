@@ -7,7 +7,7 @@ Unlike other bubble shooter games that rely solely on color, the explosions of b
 
 The challenge posed by this project was significant, serving an excellent chance for learning and experiencing the game's completion and and working with shaders in Unity.
 
-FInally, you guys can have a look and ask for a merge request.
+FInally, you guys can clone this project, have a look and ask for a merge request.
 
 ![Screenshot 2023-05-22 122743](https://github.com/eckual/BubbleShooter-ENVAST/assets/67714398/a9c54b29-5e37-4799-8010-67ed88168d76)
 ![Untitled](https://github.com/eckual/BubbleShooter-ENVAST/assets/67714398/bc02ddbb-cc7e-4683-9593-d83910e97a78)
