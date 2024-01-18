@@ -1,4 +1,4 @@
-"Bubble Shooter" 
+"Bubble Shooter" :
 
 A Unity project that offers a unique and challenging experience for both players and developers alike.
 
