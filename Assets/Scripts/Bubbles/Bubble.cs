@@ -88,5 +88,6 @@ namespace Bubbles
         }
 
         public static int GetNumber(int power) => (int)Mathf.Pow(GameConstants.BaseNumber, power);
+        
     }
 }
