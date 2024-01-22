@@ -5,6 +5,7 @@ namespace Utils
     public class MonoSingleton<T> : MonoBehaviour where T:MonoBehaviour
     {
         [SerializeField] protected bool dontDestroyOnLoad = false;
+        
         private static object lockObject = new object();
         private static T instance = null;
 
@@ -40,6 +41,7 @@ namespace Utils
                 return instance;
             }
         }
+        
         public virtual void Init()
         {
         }
@@ -53,7 +55,6 @@ namespace Utils
         {
             lockObject = null;
         }
-       
         
     }
 }
