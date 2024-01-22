@@ -32,4 +32,5 @@ public class LevelSettings : ScriptableObject
         var data = levels.Find(x => x.level == level);
         return data.maxScore;
     }
+    
 }
