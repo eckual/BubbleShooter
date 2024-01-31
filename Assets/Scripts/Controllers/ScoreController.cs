@@ -16,10 +16,7 @@ namespace Controllers
         {
             get
             {
-                if (!_levelSettings)
-                {
-                    _levelSettings = ResourceManager.GetResource<LevelSettings>(GameConstants.LevelSettings);
-                }
+                if (!_levelSettings) _levelSettings = ResourceManager.GetResource<LevelSettings>(GameConstants.LevelSettings);
                 return _levelSettings;
             }
         }
