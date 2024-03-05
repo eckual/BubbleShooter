@@ -33,7 +33,6 @@ namespace UI
 
         public virtual void Init()
         {
-
         }
 
         public virtual void OpenWindow()

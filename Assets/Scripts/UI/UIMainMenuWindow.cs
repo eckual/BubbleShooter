@@ -19,21 +19,25 @@ namespace UI
             isInitialized = true;
         }
 
-        private void AnimateTriangleImage() => triangleImage.DOColor(Color.gray, 1.2f).SetLoops(-1, LoopType.Yoyo);
+        private void AnimateTriangleImage() => triangleImage.DOColor(Color.gray, 0.7f).SetLoops(-1, LoopType.Yoyo);
 
         private void OnPlayButtonClick()
         {
             CloseWindow();
             SessionController.Instance.StartSession();
             SoundsController.Instance.StopSound(BACKGROUND_AUDIO);
-            DOTween.Kill(triangleImage.color);
+            DOTween.Kill(triangleImage);
             triangleImage.color = Color.white;
         }
 
         public override void OpenWindow()
         {
             base.OpenWindow();
-            if (!isInitialized) return;
+            if (!isInitialized) 
+            {
+                AnimateTriangleImage();
+                return; 
+            }
             SoundsController.Instance.PlaySound(BACKGROUND_AUDIO);
             AnimateTriangleImage();
         }
