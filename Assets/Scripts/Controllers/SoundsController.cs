@@ -1,4 +1,4 @@
-﻿using Bubbles;
+using Bubbles;
 using UnityEngine;
 using Utils;
 
@@ -52,5 +52,6 @@ namespace Controllers
         {
             PlaySound(SOUND_END_SHOOT);
         }
+
     }
 }
