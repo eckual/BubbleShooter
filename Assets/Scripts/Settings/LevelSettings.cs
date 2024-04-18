@@ -34,5 +34,4 @@ public class LevelSettings : ScriptableObject
         return data.maxScore;
     }
 
-    
 }
