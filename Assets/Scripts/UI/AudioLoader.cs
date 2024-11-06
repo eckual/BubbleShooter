@@ -18,7 +18,7 @@ namespace UI
             {
                 if (handle.Status != AsyncOperationStatus.Succeeded)
                 {
-                    Debug.LogError($"Failed to load sounds from addressable '{addressableKey}'");
+                    Debug.LogError($"Failed to load sounds addressable key = '{addressableKey}'");
                     return;
                 }
 
