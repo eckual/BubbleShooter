@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,14 +8,10 @@ using Utils;
 
 public class UISwapBubble : MonoBehaviour
 {
-    [SerializeField]
-    private Button button;
-    [SerializeField]
-    private TMP_Text numberText;
-    [SerializeField]
-    private Image back;
-    [SerializeField]
-    private Image border;
+    [SerializeField]private Button button;
+    [SerializeField]private TMP_Text numberText;
+    [SerializeField]private Image back;
+    [SerializeField]private Image border;
 
     public Button Button
     {
