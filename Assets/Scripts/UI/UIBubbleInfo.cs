@@ -1,4 +1,4 @@
-﻿using Bubbles;
+using Bubbles;
 using Extensions;
 using TMPro;
 using UnityEngine;
@@ -8,10 +8,8 @@ namespace UI
 {
     public class UIBubbleInfo : MonoBehaviour, IUIItem<Bubble>, IPoolObject
     {
-        [SerializeField]
-        protected string id;
-        [SerializeField]
-        protected TMP_Text infoText;
+        [SerializeField]protected string id;
+        [SerializeField]protected TMP_Text infoText;
 
         public Bubble Source { get; set; }
 
