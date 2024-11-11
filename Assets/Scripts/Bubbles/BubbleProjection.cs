@@ -29,9 +29,7 @@ namespace Bubbles
             raycastController.OnPathChanged += OnPathChanged;
             raycastController.OnStartRaycasting += OnStartRaycasting;
             raycastController.OnStopRaycasting += OnStopRaycasting;
-
             _sessionController.BubblesController.OnCurrentPowerChanged += OnCurrentPowerChanged;
-
             _prevX = PlayerRaycastController.DEFAULT_X;
             _prevY = PlayerRaycastController.DEFAULT_Y;
         }
