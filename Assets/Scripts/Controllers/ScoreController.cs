@@ -9,9 +9,9 @@ namespace Controllers
         public event Action<int> OnScoreChanged;
         
         private LevelSettings _levelSettings;
-        private int _score;
         private int _currentLevel;
-
+        private int _score;
+       
         public LevelSettings LevelSettings
         {
             get
